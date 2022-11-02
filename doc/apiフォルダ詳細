@@ -1,0 +1,23 @@
+# apiフォルダの詳細
+https://zenn.dev/sh0nk/books/537bb028709ab9/viewer/f1b6fc
+
+## routers
+ルーター（routers）には、パスオペレーション関数を定義
+「パス」= 「エンドポイント」
+「オペレーション」=「HTTPメソッド」
+
+- GET /tasks
+- POST /tasks
+- PUT /tasks/{task_id}
+- DELETE /tasks/{task_id}
+- PUT /tasks/{task_id}/done
+- DELETE /tasks/{task_id}/done
+
+## schemas
+スキーマ（Schemas）には、APIのリクエストとレスポンスを、厳密な型と一緒に定義
+Pythonは動的型付け言語でだが、昨今の動的型付けであっても型を重視するトレンドの例に漏れず、Pythonでは 「型ヒント（Type Hint）」 を使って関数のシグネチャなどに型を付与することが出来る。  
+FastAPIでは、依存するPydanticという強力なライブラリによって、この型ヒントを積極的に利用し、 APIの入出力のバリデーションを行う。  
+APIのスキーマは、APIのリクエストやレスポンスの型を定義するためのもので、データベースのスキーマとは異なる  
+
+Field はフィールドに関する付加情報を記述します。最初の変数はフィールドのデフォルト値を表します。 
+example はフィールドの値の例
