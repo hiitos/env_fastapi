@@ -7,19 +7,7 @@ import api.schemas.task as task_schema
 
 router = APIRouter()
 
-# --------------------Read--------------------
-# リクエストパラメータやリクエストボディは取らないので、レスポンスだけを定義
-# @router.get("/tasks", response_model=List[task_schema.Task])
-# async def list_tasks():
-#     return [task_schema.Task(id=1, title="1つ目のTODOタスク")]
-@router.get("/tasks", response_model=List[task_schema.Task])
-async def list_tasks(db: AsyncSession = Depends(get_db)):
-    return await task_crud.get_tasks_with_done(db)
-
-
 # --------------------Create--------------------
-# ** をつけることで、 dict をキーワード引数として展開し、 task_schema.TaskCreateResponse クラスのコンストラクタに対して dict のkey/valueを渡します。
-# = task_schema.TaskCreateResponse(id=1, title=task_body.title, done=task_body.done) と等価
 @router.post("/tasks", response_model=task_schema.TaskCreateResponse)
 async def create_task(
     # Depends は引数に関数を取り、 DI（Dependency Injection、依存性注入） を行う機構
@@ -27,6 +15,11 @@ async def create_task(
 ):
     return await task_crud.create_task(db, task_body)
 
+# --------------------Read--------------------
+# リクエストパラメータやリクエストボディは取らないので、レスポンスだけを定義
+@router.get("/tasks", response_model=List[task_schema.Task])
+async def list_tasks(db: AsyncSession = Depends(get_db)):
+    return await task_crud.get_tasks_with_done(db)
 
 # --------------------Update--------------------
 @router.put("/tasks/{task_id}", response_model=task_schema.TaskCreateResponse)

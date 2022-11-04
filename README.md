@@ -68,5 +68,5 @@ pyproject.toml と poetry.lock が更新されます。
 
 #### テストの実行
 ```
-docker-compose run --entrypoint "poetry run pytest" app
+docker-compose run --entrypoint "poetry run pytest --asyncio-mode=auto" app
 ```

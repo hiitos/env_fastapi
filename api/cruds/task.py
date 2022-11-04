@@ -9,7 +9,6 @@ from sqlalchemy.engine import Result
 
 # ============================= DBに対するCRUD操作を行う処理 ============================= 
 
-
 # --------------------Create--------------------
 async def create_task(
     # 引数としてスキーマ task_create: task_schema.TaskCreate を受け取り、DBモデルであるtask_model.Taskに変換する
