@@ -1,28 +1,71 @@
-# from typing import Tuple, Optional
+from sqlalchemy.ext.asyncio import AsyncSession
 
-# from sqlalchemy import select
-# from sqlalchemy.engine import Result
-# from sqlalchemy.ext.asyncio import AsyncSession
+import api.models.user as log_model
+import api.schemas.log as log_schema
 
-# import api.models.user as task_model
+from typing import List, Tuple, Optional
+from sqlalchemy import select
+from sqlalchemy.engine import Result
+import datetime
 
+# from logger import getLogger
 
-# async def get_done(db: AsyncSession, task_id: int) -> Optional[task_model.Done]:
-#     result: Result = await db.execute(
-#         select(task_model.Done).filter(task_model.Done.id == task_id)
-#     )
-#     done: Optional[Tuple[task_model.Done]] = result.first()
-#     return done[0] if done is not None else None  # 要素が一つであってもtupleで返却されるので１つ目の要素を取り出す
+# logger = getLogger(logger_name)
 
+# ============================= DBに対するCRUD操作を行う処理 ============================= 
 
-# async def create_done(db: AsyncSession, task_id: int) -> task_model.Done:
-#     done = task_model.Done(id=task_id)
-#     db.add(done)
-#     await db.commit()
-#     await db.refresh(done)
-#     return done
+# --------------------Create--------------------
+async def create_log(
+    db: AsyncSession, user_id, log_create: log_schema.LogCreate
+) -> log_model.Log:
 
+    log = log_model.Log(user_id=user_id,**log_create.dict())
+    db.add(log)
+    await db.commit()
+    await db.refresh(log)
+    return log
 
-# async def delete_done(db: AsyncSession, original: task_model.Done) -> None:
-#     await db.delete(original)
-#     await db.commit()
+# --------------------Read--------------------
+# Log一覧の関数
+async def get_logs_all(db: AsyncSession) -> List[Tuple[int, int,str,int, datetime.datetime]]:
+    result: Result = await (
+        db.execute(
+            select(
+                log_model.Log.log_id,
+                log_model.Log.user_id,
+                log_model.Log.content,
+                log_model.Log.content_int,
+                log_model.Log.created_at,
+            )
+        )
+    )
+    return result.all()
+
+# 特定UserのLogの関数
+async def get_logs_user(db: AsyncSession, user_id: int) -> List[Tuple[int, int,str,int, datetime.datetime]]:
+    result: Result = await db.execute(
+        select(
+            log_model.Log.log_id,
+            log_model.Log.user_id,
+            log_model.Log.content,
+            log_model.Log.content_int,
+            log_model.Log.created_at,
+        ).filter(log_model.Log.user_id == user_id)
+    )
+    return result.all()
+
+# 特定Logの関数
+async def get_log_one(db: AsyncSession, log_id: int) -> Optional[log_model.Log]:
+    result: Result = await db.execute(
+        select(log_model.Log).filter(log_model.Log.log_id == log_id)
+    )
+    log: Optional[Tuple[log_model.Log]] = result.first()
+    return log[0] if log is not None else None  # 要素が一つであってもtupleで返却されるので１つ目の要素を取り出す
+
+# --------------------Update--------------------
+# 特に必要なしと判断
+
+# # --------------------Delete--------------------
+async def delete_log(db: AsyncSession, original: log_model.Log) -> None:
+    await db.delete(original)
+    await db.commit()

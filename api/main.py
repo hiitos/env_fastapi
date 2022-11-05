@@ -4,4 +4,4 @@ from api.routers import log, user
 
 app = FastAPI()
 app.include_router(user.router)
-# app.include_router(log.router)
+app.include_router(log.router)
